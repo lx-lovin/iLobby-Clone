@@ -3,6 +3,8 @@
 # home screen -
 Must do:
 -Select Photo by clicking profile photo icon
+
+
 -Select country (for country code)
 
 
