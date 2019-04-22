@@ -452,7 +452,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var phoneNmber: EditText
     lateinit var sendOtp: Button
     lateinit var profilePhoto: ImageView
-    lateinit var dataImage:ByteArray
+    var dataImage:ByteArray = byteArrayOf()
 
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -466,7 +466,7 @@ class MainActivity : AppCompatActivity() {
         sendOtp = findViewById(R.id.sendOtp)
         profilePhoto = findViewById(R.id.profilePhoto)
         mAuth = FirebaseAuth.getInstance()
-        spinner.adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, countryNames)
+        spinner.adapter = ArrayAdapter<String>(this, R.layout.color_spinner, countryNames)
 
 
         profilePhoto.setOnClickListener {
@@ -484,11 +484,13 @@ class MainActivity : AppCompatActivity() {
 
         sendOtp.setOnClickListener {
 
-             if (phoneNmber.text.isEmpty()) {
+            if(dataImage.isEmpty()){
+                Toast.makeText(this, "Please Select Photo", Toast.LENGTH_LONG).show()
+            }else if (phoneNmber.text.isEmpty()) {
                 Toast.makeText(this, "Please Enter Phone Number", Toast.LENGTH_LONG).show()
-
-
-            }
+            }else if(phoneNmber.text.toString().length < 10){
+                 Toast.makeText(this, "Please Enter Valid Phone Number", Toast.LENGTH_LONG).show()
+             }
             else{
 
 
