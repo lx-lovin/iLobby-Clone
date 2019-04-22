@@ -48,7 +48,11 @@ class OtpActivity : AppCompatActivity() {
         sendVerficationCode(phoneNumberr)
 
         verify.setOnClickListener {
-            VerifyCode(code.text.toString())
+            if(code.text.toString().length ==6 ){
+                VerifyCode(code.text.toString())
+            }else{
+                Toast.makeText(this,"Enter 6 Digit OTP",Toast.LENGTH_SHORT).show()
+            }
         }
 
         againPhoneNumber.setOnClickListener {
