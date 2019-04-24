@@ -22,7 +22,9 @@ import java.net.URI
 import java.util.concurrent.TimeUnit
 import android.R.attr.bitmap
 import android.R.attr.data
+import android.graphics.BitmapFactory
 import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.google.firebase.database.*
 import java.io.ByteArrayOutputStream
@@ -470,14 +472,19 @@ class MainActivity : AppCompatActivity() {
 
 
         profilePhoto.setOnClickListener {
-
-            if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+                requestPermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),10)
+            }
+            /*if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
                 requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),1)
             }else{
-                var intent:Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                startActivityForResult(intent,1)
-            }
 
+                var intent:Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                startActivityForResult(intent,1)*/
+           else {
+                var intent: Intent = Intent(this@MainActivity, CameraActivity::class.java)
+                startActivityForResult(intent, 2)
+            }
         }
 
 
@@ -542,7 +549,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if(requestCode==1 && data!=null && resultCode== Activity.RESULT_OK){
@@ -552,18 +559,32 @@ class MainActivity : AppCompatActivity() {
             selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos)
             dataImage = baos.toByteArray()
         }
+    }*/
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode==2){
+            if (resultCode==Activity.RESULT_OK){
+                dataImage = data!!.getByteArrayExtra("bytes")
+                var bmp:Bitmap = BitmapFactory.decodeByteArray(dataImage, 0, dataImage.size)
+                profilePhoto.setImageBitmap(Bitmap.createScaledBitmap(bmp, profilePhoto.getWidth(),
+                    profilePhoto.getHeight(), false));
+
+
+            }
+        }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
+        if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
 
             if(grantResults.size>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-
-                var intent:Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                startActivityForResult(intent,1)
+                var intent:Intent = Intent(this@MainActivity,CameraActivity::class.java)
+                startActivityForResult(intent,2)
 
             }
         }
