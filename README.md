@@ -1,4 +1,9 @@
-# testapp
+# iLobby Clone
+- An Android app which reduces the work of receptionist and improve the authentication.
+- Authenticate visitors via phone authentication and update the visitors section in database if successfully identified
+if not then update the suspicious users section in database.
+- implemented camerakit and rxjava
+- Implemented using kotlin, firebase(for database and phone authentication)
 
 # home screen -
 Must do:
